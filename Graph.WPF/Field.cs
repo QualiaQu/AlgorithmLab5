@@ -69,7 +69,7 @@ namespace Graph.WPF
 		{
 			try
 			{
-				_algorithms.BFT(node);
+				_algorithms.Bft(node);
 			}
 			catch (Exception)
 			{
@@ -81,7 +81,7 @@ namespace Graph.WPF
 		{
 			try
 			{
-				_algorithms.DFT(node);
+				_algorithms.Dft(node);
 			}
 			catch (Exception)
 			{
@@ -220,6 +220,21 @@ namespace Graph.WPF
 				if(!_points.ContainsKey(e.Key))_points.Add(e.Key, new(0.4 * width * Math.Cos(i * 2 * Math.PI / Graph.Nodes.Count) + width * 0.475,
 					0.4 * height * Math.Sin(i * 2 * Math.PI / Graph.Nodes.Count) + height * 0.475));
 				i++;
+			}
+		}
+
+		public void FindWay(string input)
+		{
+			// string[] arr = input.Split('-');
+			// _algorithms.FindWay(arr[0], arr[1]);
+			try
+			{
+				string[] arr = input.Split('-');
+				_algorithms.FindWay(arr[0], arr[1]);
+			}
+			catch (Exception)
+			{
+				_writeLog("ERROR");
 			}
 		}
 	}

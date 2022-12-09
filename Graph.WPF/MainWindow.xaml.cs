@@ -22,7 +22,7 @@ namespace Graph.WPF
 
 		enum Action
 		{
-			AddNode, AddLink, RemoveNode, RemoveLink, Bft, Dft, MaxFlow, OpenFile, SaveFile
+			AddNode, AddLink, RemoveNode, RemoveLink, Bft, Dft, MaxFlow, FindWay, OpenFile, SaveFile
 		}
 
 		public MainWindow()
@@ -72,6 +72,9 @@ namespace Graph.WPF
 					break;
 				case Action.MaxFlow:
 					_field.MaxFlow(_input);
+					break;
+				case Action.FindWay:
+					_field.FindWay(_input);
 					break;
 				case Action.OpenFile:
 					OpenFile();

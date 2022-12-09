@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AlgorithmLab5
 {
     public class GraphAlgorithms
     {
-        private Graph graph;
-		private WriteLog WriteLog;
+        private readonly Graph _graph;
+		private readonly WriteLog _writeLog;
         public GraphAlgorithms()
         {
 
@@ -17,54 +15,54 @@ namespace AlgorithmLab5
 
         public GraphAlgorithms(Graph graph, WriteLog writeLog)
         {
-            this.graph = graph;
-			WriteLog = writeLog;
+            _graph = graph;
+			_writeLog = writeLog;
         }
 
         //Рекурсивный метод
-        private void DFTRecursive(string node, Dictionary<string, bool> visited)
+        private void DftRecursive(string node, Dictionary<string, bool> visited)
         {
 			//Отмечаем полученный узел
-			WriteLog($"Отмечаем узел {node}\n");
+			_writeLog($"Отмечаем узел {node}\n");
 			visited[node] = true;
 
             //Выполняем подобное для каждого соседнего узла
-            List<string> neighbours = graph.Nodes[node].Neighbours;
-			WriteLog($"Соседи узла {node}:\n");
+            List<string> neighbours = _graph.Nodes[node].Neighbours;
+			_writeLog($"Соседи узла {node}:\n");
 			foreach (var e in neighbours)
 			{
-				WriteLog($" {e}");
+				_writeLog($" {e}");
 			}
-			WriteLog("\n------\n");
+			_writeLog("\n------\n");
             foreach (var n in neighbours)
             {
-                if (!visited[n]) DFTRecursive(n, visited);
+                if (!visited[n]) DftRecursive(n, visited);
             }
         }
 
 		//Обход в глубину
-		public void DFT(string node)
+		public void Dft(string node)
         {
 			//Список посещенных узлов
 			Dictionary<string, bool> visitedNodes = new();
-            foreach (var e in graph.Nodes)
+            foreach (var e in _graph.Nodes)
             {
                 visitedNodes.Add(e.Key, false);
             }
 
 			//Вызов рекурсивного метода
-			WriteLog($"Обход в глубину\n" +
+			_writeLog($"Обход в глубину\n" +
 				$"Начинаем с узла {node}\n");
-            DFTRecursive(node, visitedNodes);
+            DftRecursive(node, visitedNodes);
         }
 
         //Обход в ширину
-        public void BFT(string node)
+        public void Bft(string node)
         {
-			if (!graph.Nodes.ContainsKey(node)) throw new Exception("Error");
+			if (!_graph.Nodes.ContainsKey(node)) throw new Exception("Error");
             //Список посещенных узлов
             Dictionary<string, bool> visitedNodes = new();
-            foreach (var e in graph.Nodes)
+            foreach (var e in _graph.Nodes)
             {
                 visitedNodes.Add(e.Key, false);
             }
@@ -72,36 +70,36 @@ namespace AlgorithmLab5
             //Очередь узлов для посещения
             LinkedList<string> queue = new();
 
-			WriteLog($"Обход в ширину\n" +
+			_writeLog($"Обход в ширину\n" +
 				$"Начинаем с узла {node}\n");
 			//Отмечаем первый узел и добавляем в очередь
-			WriteLog($"Отмечаем узел {node}\n");
+			_writeLog($"Отмечаем узел {node}\n");
 			visitedNodes[node] = true;
-			WriteLog($"Добавляем узел {node} в очередь\n");
+			_writeLog($"Добавляем узел {node} в очередь\n");
 			queue.AddLast(node);
-			WriteLog("Очередь:");
+			_writeLog("Очередь:");
 			foreach (var e in queue)
 			{
-				WriteLog($" {e}");
+				_writeLog($" {e}");
 			}
-			WriteLog("\n-----\n");
+			_writeLog("\n-----\n");
 
 			while (queue.Any())
             {
 				//Убираем первый узел в очереди
 				node = queue.First();
-				WriteLog($"Берём первый узел из очереди: {node}\n");
+				_writeLog($"Берём первый узел из очереди: {node}\n");
 				queue.RemoveFirst();
 
                 //Получаем список соседних узлов
 				//Отмечаем их и добавляем в очередь
-                List<string> neighbours = graph.Nodes[node].Neighbours;
-				WriteLog($"Соседи узла {node}:");
+                List<string> neighbours = _graph.Nodes[node].Neighbours;
+				_writeLog($"Соседи узла {node}:");
 				foreach (var e in neighbours)
 				{
-					WriteLog($" {e}");
+					_writeLog($" {e}");
 				}
-				WriteLog("\n");
+				_writeLog("\n");
 
 				foreach (var val in neighbours)
                 {
@@ -112,13 +110,13 @@ namespace AlgorithmLab5
                     }
                 }
 
-				WriteLog("Очередь:");
+				_writeLog("Очередь:");
 				foreach (var e in queue)
 				{
-					WriteLog($" {e}");
+					_writeLog($" {e}");
 				}
-				WriteLog("\n------\n");
-			}
+				_writeLog("\n------\n");
+            }
         }
 
 
@@ -126,8 +124,6 @@ namespace AlgorithmLab5
 		//Максимальный поток
 		public int FordFulkerson(Graph graph, string s, string t)
 		{
-			string u, v;
-
 			//Граф остаточного потока
 			Dictionary<string, int> rGraph = new();
 			foreach(var l in graph.Links)
@@ -141,24 +137,26 @@ namespace AlgorithmLab5
 			//Обнуляем максимальный поток
 			int maxFlow = 0;
 
-			WriteLog("Начинаем поиск максимального потока\n");
-			WriteLog($"Из узла {s} в {t}\n");
+			_writeLog("Начинаем поиск максимального потока\n");
+			_writeLog($"Из узла {s} в {t}\n");
 
 			//Пока путь есть
-			while (BFS(rGraph, s, t, path))
+			while (Bfs(rGraph, s, t, path))
 			{
-				WriteLog($"Текущий максимальный поток: {maxFlow}\n");
-				WriteLog("Текущий путь:");
+				_writeLog($"Текущий максимальный поток: {maxFlow}\n");
+				_writeLog("Текущий путь:");
 
 				//Ищем минимальный поток у данного пути
 				int pathFlow = int.MaxValue;
+				string u;
+				string v;
 				for (v = t; v != s; v = path[v])
 				{
 					u = path[v];
 					pathFlow = Math.Min(pathFlow, rGraph[ToLink(u, v)]);
-					WriteLog(" " + ToLink(u, v) + "[" + rGraph[ToLink(u, v)] + "]");
+					_writeLog(" " + ToLink(u, v) + "[" + rGraph[ToLink(u, v)] + "]");
 				}
-				WriteLog($"\nМинимальный поток у этого пути: {pathFlow}\n");
+				_writeLog($"\nМинимальный поток у этого пути: {pathFlow}\n");
 
 				//Уменьшаем пропускную способность
 				for (v = t; v != s; v = path[v])
@@ -170,10 +168,10 @@ namespace AlgorithmLab5
 				//Увеличиваем максимальный поток на поток отдельного пути
 				maxFlow += pathFlow;
 
-				WriteLog("-----\n");
+				_writeLog("-----\n");
 			}
 
-			WriteLog("Максимальный поток равен "
+			_writeLog("Максимальный поток равен "
 							  + maxFlow + "\n");
 
 			return maxFlow;
@@ -181,16 +179,15 @@ namespace AlgorithmLab5
 
 		//Поиск обходом в ширину
 		//Проверяет есть ли путь. Если да, то заполняет его
-		private bool BFS(Dictionary<string, int> rGraph, string s, string t, Dictionary<string, string> path)
+		private bool Bfs(Dictionary<string, int> rGraph, string s, string t, Dictionary<string, string> path)
 		{
 			Dictionary<string, bool> visitedNodes = new();
-			foreach (var e in graph.Nodes)
+			foreach (var e in _graph.Nodes)
 			{
 				visitedNodes.Add(e.Key, false);
 			}
 
-			List<string> queue = new();
-			queue.Add(s);
+			List<string> queue = new() {s};
 			visitedNodes[s] = true;
 			path[s] = null;
 
@@ -199,7 +196,7 @@ namespace AlgorithmLab5
 				string u = queue[0];
 				queue.RemoveAt(0);
 
-				List<string> list = graph.Nodes[u].Neighbours;
+				List<string> list = _graph.Nodes[u].Neighbours;
 
 				foreach (var v in list)
 				{
@@ -220,10 +217,179 @@ namespace AlgorithmLab5
 
 			return false;
 		}
+		
 
 		private static string ToLink(string s, string t)
 		{
-			return s.ToString() + "-" + t.ToString();
+			return s + "-" + t;
 		}
-	}
+
+		public void FindWay(string start, string finish)
+		{
+			if (!_graph.Nodes.ContainsKey(start)
+			    || !_graph.Nodes.ContainsKey(finish)
+			    || Convert.ToInt32(start) > Convert.ToInt32(finish))
+				throw new Exception("Error");
+			//Список посещенных узлов
+			Dictionary<string, bool> visitedNodes = new();
+			foreach (var e in _graph.Nodes)
+			{
+				visitedNodes.Add(e.Key, false);
+			}
+			
+			//Очередь узлов для посещения
+			LinkedList<string> queue = new();
+
+			_writeLog($"Обход в ширину\n" +
+			          $"Начинаем с узла {start}\n");
+			//Отмечаем первый узел и добавляем в очередь
+			_writeLog($"Отмечаем узел {start}\n");
+			visitedNodes[start] = true;
+			_writeLog($"Добавляем узел {start} в очередь\n");
+			queue.AddLast(start);
+			_writeLog("Очередь:");
+			foreach (var e in queue)
+			{
+				_writeLog($" {e}");
+			}
+			_writeLog("\n-----\n");
+			
+			int length = 0;
+			bool exit = false;
+			bool copied = true;
+			var lvlList = new List<string>();
+			int countSteps = 0;
+			string way = null;
+			while(queue.Any())
+			{
+				start = queue.First();
+				_writeLog($"Берём первый узел из очереди: {start}\n");
+				queue.RemoveFirst();
+				
+				if (!lvlList.Contains(start))
+				{
+					lvlList = new List<string>();
+					way += start + " -> ";
+					length++;
+				}
+				
+				//Получаем список соседних узлов
+				//Отмечаем их и добавляем в очередь
+				List<string> neighbours = _graph.Nodes[start].Neighbours;
+				_writeLog($"Соседи узла {start}:");
+				foreach (var e in neighbours)
+				{
+					foreach (var node in lvlList)
+					{
+						if (e == node)
+						{
+							copied = false;
+							break;
+						}
+					}
+					if (copied)
+					{
+						lvlList = neighbours;
+					}
+					if (e == finish && countSteps == 0)
+					{
+						exit = true;
+						_writeLog($" {e}");
+						way += e;
+						break;
+					}
+					if(e == finish)
+					{
+						length++;
+						exit = true;
+						_writeLog($" {e}");
+						way += e;
+						break;
+					}
+					
+					_writeLog($" {e}");
+				}
+				_writeLog("\n");
+				foreach (var val in neighbours)
+				{
+					if (!visitedNodes[val])
+					{
+						visitedNodes[val] = true;
+						queue.AddLast(val);
+					}
+				}
+				
+				_writeLog("Очередь:");
+				foreach (var e in queue)
+				{
+					_writeLog($" {e}");
+				}
+				_writeLog("\n");
+				if (exit)
+				{
+					_writeLog($"Длина кратчайшего пути равна {length}\n");
+					_writeLog($"Путь {GetWay(finish, length)}");
+					break;
+				}
+				_writeLog("\n------\n");
+				countSteps++;
+			}
+		}
+
+		private string GetWay(string finish, int length)
+		{
+			string way = " ";
+			_graph.Links.Reverse();
+			var target = finish;
+			int count = 0;
+			var skipList = new List<string>();
+			while(way[^1] != '0')
+			{
+				way = " ";
+				foreach (var link in _graph.Links)
+				{
+					bool skip = false;
+					foreach (var e in skipList)
+					{
+						if (target == e)
+						{
+							target = finish;
+						}
+						if (link.Source == e)
+						{
+							skip = true;
+						}
+					}
+
+					if (skip)
+					{
+						continue;
+					}
+					if (link.Target == target)
+					{
+						count++;
+						way += link.Target + " >- ";
+						target = link.Source;
+					}
+
+					if (target == "0") 
+					{
+						way += "0";
+						break;
+					}
+				}
+				if (count != length)
+				{
+					skipList.Add(target);
+				}
+			}
+			_graph.Links.Reverse();
+			string result = null;
+			foreach (var c in way.Reverse())
+			{
+				result += c;
+			}
+			return result;
+		}
+    }
 }

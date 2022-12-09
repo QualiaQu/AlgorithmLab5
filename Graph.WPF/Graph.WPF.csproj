@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="bin\Debug\net5.0-windows\AdjacencyMaxFlow — копия.csv" />
     <Content Include="bin\Debug\net5.0-windows\AdjacencyMaxFlow.csv" />
     <Content Include="bin\Debug\net5.0-windows\input.csv" />
     <Content Include="bin\Debug\net5.0-windows\net.csv" />
