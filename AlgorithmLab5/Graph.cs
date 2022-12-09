@@ -16,7 +16,7 @@ namespace AlgorithmLab5
 
 		public Dictionary<string, Node> Nodes { get; set; }
 		public List<Link> Links { get; set; }
-
+        
 		public void AddNode(string nodeName)
 		{
 			if (!Nodes.ContainsKey(nodeName)) Nodes.Add(nodeName, new Node(nodeName));
@@ -39,7 +39,7 @@ namespace AlgorithmLab5
 			string[] arr = link.ToString()!.Split('-');
 			AddLink(arr[0], arr[1], weight);
 		}
-
+        
 		public void ChangeNode(string node, string newName)
 		{
 			Nodes[node].UpdateName(newName);

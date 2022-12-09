@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace AlgorithmLab5
@@ -227,8 +228,7 @@ namespace AlgorithmLab5
 		public void FindWay(string start, string finish)
 		{
 			if (!_graph.Nodes.ContainsKey(start)
-			    || !_graph.Nodes.ContainsKey(finish)
-			    || Convert.ToInt32(start) > Convert.ToInt32(finish))
+			    || !_graph.Nodes.ContainsKey(finish))
 				throw new Exception("Error");
 			//Список посещенных узлов
 			Dictionary<string, bool> visitedNodes = new();
@@ -259,7 +259,8 @@ namespace AlgorithmLab5
 			bool copied = true;
 			var lvlList = new List<string>();
 			int countSteps = 0;
-			string way = null;
+			string st = start;
+			string neighbour = null;
 			while(queue.Any())
 			{
 				start = queue.First();
@@ -269,7 +270,6 @@ namespace AlgorithmLab5
 				if (!lvlList.Contains(start))
 				{
 					lvlList = new List<string>();
-					way += start + " -> ";
 					length++;
 				}
 				
@@ -295,7 +295,6 @@ namespace AlgorithmLab5
 					{
 						exit = true;
 						_writeLog($" {e}");
-						way += e;
 						break;
 					}
 					if(e == finish)
@@ -303,7 +302,6 @@ namespace AlgorithmLab5
 						length++;
 						exit = true;
 						_writeLog($" {e}");
-						way += e;
 						break;
 					}
 					
@@ -328,7 +326,7 @@ namespace AlgorithmLab5
 				if (exit)
 				{
 					_writeLog($"Длина кратчайшего пути равна {length}\n");
-					_writeLog($"Путь {GetWay(finish, length)}");
+					_writeLog($"Путь {GetWay(st, finish, length, start)}");
 					break;
 				}
 				_writeLog("\n------\n");
@@ -336,60 +334,64 @@ namespace AlgorithmLab5
 			}
 		}
 
-		private string GetWay(string finish, int length)
+		private string GetWay(string st, string finish, int length, string prev)
 		{
+			var start = st[0];
 			string way = " ";
 			_graph.Links.Reverse();
 			var target = finish;
 			int count = 0;
 			var skipList = new List<string>();
-			while(way[^1] != '0')
+			if (length == 1)
 			{
-				way = " ";
-				foreach (var link in _graph.Links)
+				way += finish + " >- " + prev;
+			}
+			else
+			{
+				while(way[^1] != start)
 				{
-					bool skip = false;
-					foreach (var e in skipList)
+					way = " ";
+					foreach (var link in _graph.Links)
 					{
-						if (target == e)
+						bool skip = false;
+						foreach (var e in skipList)
 						{
-							target = finish;
+							if (target == e)
+							{
+								target = finish;
+							}
+							if (link.Source == e)
+							{
+								skip = true;
+							}
 						}
-						if (link.Source == e)
+
+						if (skip)
 						{
-							skip = true;
+							continue;
+						}
+						if (link.Target == target)
+						{
+							count++;
+							way += link.Target + " >- ";
+							target = link.Source;
+						}
+
+						if (target == start.ToString()) 
+						{
+							way += start;
+							break;
 						}
 					}
-
-					if (skip)
+					if (count != length)
 					{
-						continue;
+						skipList.Add(target);
 					}
-					if (link.Target == target)
-					{
-						count++;
-						way += link.Target + " >- ";
-						target = link.Source;
-					}
-
-					if (target == "0") 
-					{
-						way += "0";
-						break;
-					}
-				}
-				if (count != length)
-				{
-					skipList.Add(target);
 				}
 			}
+			
 			_graph.Links.Reverse();
-			string result = null;
-			foreach (var c in way.Reverse())
-			{
-				result += c;
-			}
-			return result;
+			return way.Reverse().Aggregate<char, string>(null, (current, c) => current + c);
 		}
     }
 }

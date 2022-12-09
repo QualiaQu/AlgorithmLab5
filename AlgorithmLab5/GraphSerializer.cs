@@ -89,66 +89,35 @@ namespace AlgorithmLab5
 
         public static string Serialize(Graph graph)
         {
-            StringBuilder[] sB = new StringBuilder[graph.Links.Count];
-            for (var i = 0; i < graph.Links.Count; i++)
+            StringBuilder[] sB = new StringBuilder[graph.Nodes.Count];
+
+            for (int i = 0; i < graph.Nodes.Count; i++)
             {
-                sB[i] = new();
-                for (var target = 0; target < graph.Links.Count; target++)
+                sB[i] = new StringBuilder();
+                var node = graph.Nodes[i.ToString()];
+                for(int j = 0; j < graph.Nodes.Count; j++)
                 {
-                    if (graph.Links[i].Target != target.ToString())
+                    bool next = false;
+                    foreach (var neighbour in node.Neighbours)
                     {
-                        sB[i].Append("0;");
-                        continue;
+                        if (j.ToString() == neighbour)
+                        {
+                            foreach (var link in graph.Links.Where(link => link.Source == i.ToString() && link.Target == j.ToString()))
+                            {
+                                sB[i].Append(link.Weight + ";");
+                                next = true;
+                                break;
+                            }
+                        }
+                        if (next) break;
                     }
-                    if (graph.Links[i].Target == target.ToString())
-                    {
-                        sB[i].Append(graph.Links[i].Weight + ";");
-                    }
-                    if (i+1 < graph.Links.Count && graph.Links[i+1].Source != null 
-                                                && graph.Links[i].Source == graph.Links[i + 1].Source 
-                                                && Convert.ToDouble(graph.Links[i+1].Target) - Convert.ToDouble(graph.Links[i].Target) > 1)
-                    {
-                        sB[i].Append("0;");
-                    }
-                    if (i+1 < graph.Links.Count && graph.Links[i+1].Source != null && graph.Links[i].Source == graph.Links[i+1].Source)
-                    {
-                        sB[i].Append(graph.Links[i+1].Weight + ";");
-                        break;
-                    }
+                    if(!next) sB[i].Append("0;");
                 }
-                //sB[i].Remove(sB[i].Length - 1, 1);
+                sB[i].Remove(sB[i].Length - 1, 1);
+                sB[i].Append('\n');
             }
-            bool next = false;
-            return sB.Aggregate("", (current, builder) => current + (builder.ToString() + '\n'));
+            
+            return sB.Aggregate<StringBuilder, string>(null, (current, builder) => current + builder);
         }
-        // public static string Serialize(Graph graph)
-		// {
-  //           StringBuilder[] sB = new StringBuilder[3];
-  //           for (int i = 0; i < 3; i++) sB[i] = new();
-  //
-  //           int linkCount = graph.Links.Count;
-  //
-  //           for (int i = 0; i < linkCount; i++)
-		// 	{
-  //               sB[0].Append(graph.Links[i].Source);
-  //               sB[1].Append(graph.Links[i].Target);
-  //               sB[2].Append(graph.Links[i].Weight);
-  //
-  //               if(i != linkCount - 1)
-		// 		{
-  //                   foreach(var e in sB)
-		// 			{
-  //                       e.Append(';');
-		// 			}
-		// 		}
-		// 	}
-  //
-  //           string result =
-  //               sB[0].ToString() + '\n' +
-  //               sB[1].ToString() + '\n' +
-  //               sB[2].ToString();
-  //
-  //           return result;
-  //       }
     }
 }
