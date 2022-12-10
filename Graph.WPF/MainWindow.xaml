@@ -24,6 +24,7 @@
 			<ComboBoxItem>Обход в ширину</ComboBoxItem>
 			<ComboBoxItem>Обход в глубину</ComboBoxItem>
 			<ComboBoxItem>Максимальный поток</ComboBoxItem>
+			<ComboBoxItem>Минимальное остовное дерево</ComboBoxItem>
 			<ComboBoxItem>Поиск кратчайшего пути</ComboBoxItem>
 			<ComboBoxItem IsSelected="True">Открыть файл</ComboBoxItem>
 			<ComboBoxItem>Сохранить файл</ComboBoxItem>

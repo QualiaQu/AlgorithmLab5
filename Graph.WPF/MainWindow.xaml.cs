@@ -22,7 +22,7 @@ namespace Graph.WPF
 
 		enum Action
 		{
-			AddNode, AddLink, RemoveNode, RemoveLink, Bft, Dft, MaxFlow, FindWay, OpenFile, SaveFile
+			AddNode, AddLink, RemoveNode, RemoveLink, Bft, Dft, MaxFlow, MinimumSpanningTree, FindWay, OpenFile, SaveFile
 		}
 
 		public MainWindow()
@@ -36,20 +36,28 @@ namespace Graph.WPF
 			string[] graphData = File.ReadAllLines(filename);
 			_graph = GraphSerializer.Deserialize(graphData, GraphSerializer.GraphStorageType.AdjacencyMatrix);
 			_field = new(Canvas, writeLog, _graph);
-
 			_field.ArrangeInCircle(MWindow.Width * 2 / 3, MWindow.Height);
-			_field.Draw();
+			_field.Draw(true);
+		}
+
+		private void DrawMst(AlgorithmLab5.Graph graph)
+		{
+			WriteLog writeLog = WriteInTextBox;
+			_field = new(Canvas, writeLog, graph);
+			_field.ArrangeInCircle(MWindow.Width * 2 / 3, MWindow.Height);
+			_field.Draw(false);
 		}
 		private void Button_Click(object sender, RoutedEventArgs e)
 		{
 			Canvas.Children.Clear();
 			Log.Text = "";
 			_input = TextBox.Text;
-
+			
 			switch (_action)
 			{
 				case Action.AddNode:
 					_field.AddNode(_input);
+					_field.Draw(true);
 					break;
 				case Action.AddLink:
 					WeightInput weightInput = new WeightInput();
@@ -57,24 +65,34 @@ namespace Graph.WPF
 					{
 						_field.AddLink(_input, weightInput.Weight);
 					}
+					_field.Draw(true);
 					break;
 				case Action.RemoveNode:
 					_field.RemoveNode(_input);
+					_field.Draw(true);
 					break;
 				case Action.RemoveLink:
 					_field.RemoveLink(_input);
+					_field.Draw(true);
 					break;
 				case Action.Bft:
 					_field.Bft(_input);
+					_field.Draw(true);
 					break;
 				case Action.Dft:
-					_field.Dft(_input); 
+					_field.Dft(_input);
+					_field.Draw(true);
 					break;
 				case Action.MaxFlow:
 					_field.MaxFlow(_input);
+					_field.Draw(true);
+					break;
+				case Action.MinimumSpanningTree:
+					DrawMst(_field.SpanningTree());
 					break;
 				case Action.FindWay:
 					_field.FindWay(_input);
+					_field.Draw(true);
 					break;
 				case Action.OpenFile:
 					OpenFile();
@@ -87,8 +105,8 @@ namespace Graph.WPF
 			}
 
 			_field.ArrangeInCircle(MWindow.Width * 2 / 3, MWindow.Height);
-			_field.Draw();
 		}
+		
 		private void OpenFile()
 		{
 			_openFileDialog = new()

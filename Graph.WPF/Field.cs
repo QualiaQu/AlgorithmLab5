@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using AlgorithmLab5;
-using Microsoft.Win32;
 
 namespace Graph.WPF
 {
@@ -17,6 +17,7 @@ namespace Graph.WPF
 		readonly int _radius = 30;
 		readonly Canvas _canvas;
 		readonly WriteLog _writeLog;
+		
 		
 		
 
@@ -128,7 +129,7 @@ namespace Graph.WPF
 			}
 		}
 
-		private void DrawLinks(AlgorithmLab5.Graph graph, Dictionary<string, Point> pc)
+		private void DrawLinks(AlgorithmLab5.Graph graph, Dictionary<string, Point> pc, bool arrow)
 		{
 			foreach (var l in graph.Links)
 			{
@@ -151,16 +152,13 @@ namespace Graph.WPF
 						(pc[l.Target].Y + pc[l.Source].Y + _radius) / 2)
 				};
 				_canvas.Children.Add(text);
-
-				DrawArrow(_points[l.Source].X + _radius / 2, _points[l.Source].Y + _radius / 2,
-					_points[l.Target].X + _radius / 2, _points[l.Target].Y + _radius / 2);
+				if (arrow)
+				{
+					DrawArrow(_points[l.Source].X + _radius / 2, _points[l.Source].Y + _radius / 2,
+						_points[l.Target].X + _radius / 2, _points[l.Target].Y + _radius / 2);
+				}
+				
 			}
-		}
-
-		private bool AreEqual(Link l1, Link l2)
-		{
-			return (l1.Source == l2.Source && l1.Target == l2.Target)
-				|| (l1.Source == l2.Target && l1.Target == l2.Source);
 		}
 
 		private void DrawArrow(double x1, double y1, double x2, double y2)
@@ -204,9 +202,9 @@ namespace Graph.WPF
 			_canvas.Children.Add(line);
 		}
 
-		public void Draw()
+		public void Draw(bool arrow)
 		{
-			DrawLinks(Graph, _points);
+			DrawLinks(Graph, _points, arrow);
 			DrawNodes(Graph, _points);
 		}
 
@@ -222,6 +220,49 @@ namespace Graph.WPF
 				i++;
 			}
 		}
+		private int GetSumWeights(AlgorithmLab5.Graph graph)
+		{
+			
+			int sum = 0;
+			foreach (var link in graph.Links)
+			{
+				sum += link.Weight;
+			}
+
+			return sum;
+		}
+		
+
+		public AlgorithmLab5.Graph SpanningTree()
+		{
+			switch (Graph.IsUndirected)
+			{
+				case false when !Graph.IsMst:
+					DoUndirected();
+					_writeLog("Теперь граф неориентированный");
+					return Graph;
+				case true when !Graph.IsMst:
+				{
+					var graph = _algorithms.SpanningTreeByPrim();
+					Print(graph.Item2);
+					Print("Суммарный вес рёбер = " + GetSumWeights(graph.Item1));
+					return graph.Item1;
+				}
+				default:
+					Print("Суммарный вес рёбер = " + GetSumWeights(Graph));
+					return Graph;
+			}
+		}
+		private void DoUndirected()
+		{
+			var newLinks = Graph.Links.ToDictionary(link => link.Target + "-" + link.Source, link => link.Weight);
+			foreach (var link in newLinks)
+			{
+				Graph.AddLink(link.Key, link.Value);
+			}
+
+			Graph.IsUndirected = true;
+		}
 
 		public void FindWay(string input)
 		{
@@ -236,6 +277,11 @@ namespace Graph.WPF
 			{
 				_writeLog("ERROR");
 			}
+		}
+
+		private void Print(string text)
+		{
+			_writeLog(text);
 		}
 	}
 }

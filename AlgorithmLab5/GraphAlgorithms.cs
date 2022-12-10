@@ -9,15 +9,37 @@ namespace AlgorithmLab5
     {
         private readonly Graph _graph;
 		private readonly WriteLog _writeLog;
-        public GraphAlgorithms()
-        {
 
-        }
-
-        public GraphAlgorithms(Graph graph, WriteLog writeLog)
+		public GraphAlgorithms(Graph graph, WriteLog writeLog)
         {
             _graph = graph;
 			_writeLog = writeLog;
+        }
+
+        public bool IsUndirected()
+        {
+	        int count = 0;
+	        foreach (var link in _graph.Links)
+	        {
+		        var current = ReverseString(link.ToString());
+		        foreach (var checkLink in _graph.Links)
+		        {
+			        if (current == checkLink.Source + "-" + checkLink.Target)
+			        {
+				        count++;
+			        }
+		        }
+	        }
+
+	        _graph.IsUndirected = true;
+	        return count >= _graph.Links.Count / 2;
+        }
+
+        private static string ReverseString(string s)
+        {
+	        char[] arr = s.ToCharArray();
+	        Array.Reverse(arr);
+	        return new string(arr);
         }
 
         //Рекурсивный метод
@@ -260,7 +282,6 @@ namespace AlgorithmLab5
 			var lvlList = new List<string>();
 			int countSteps = 0;
 			string st = start;
-			string neighbour = null;
 			while(queue.Any())
 			{
 				start = queue.First();
@@ -392,6 +413,73 @@ namespace AlgorithmLab5
 			
 			_graph.Links.Reverse();
 			return way.Reverse().Aggregate<char, string>(null, (current, c) => current + c);
+		}
+
+		public (Graph, string) SpanningTreeByPrim()
+		{
+			string explanation = "";
+			var mst = new List<Link>();
+			//неиспользованные ребра
+			var notUsedE  = _graph.Links;
+			//использованные вершины
+			var usedV  = new List<int>();
+			//неиспользованные вершины
+			var notUsedV  = new List<int>();
+			for (int i = 0; i < _graph.Nodes.Count; i++)
+				notUsedV.Add(i);
+			Random rand = new Random();
+			//var start = rand.Next(0, _graph.Nodes.Count);
+			var start = 0;
+			usedV.Add(start);
+			explanation += $"Начинаем с вершины {start}\n";
+			notUsedV.RemoveAt(usedV[0]);
+			while (notUsedV.Count > 0)
+			{
+				int minE = -1; //номер наименьшего ребра
+				//поиск наименьшего ребра
+				explanation += "Ищем наименьшее соседнее ребро\n";
+				for (int i = 0; i < notUsedE.Count; i++)
+				{
+					if (((usedV.IndexOf(Convert.ToInt32(notUsedE[i].Source)) == -1) ||
+					     (notUsedV.IndexOf(Convert.ToInt32(notUsedE[i].Target)) == -1)) &&
+					    ((usedV.IndexOf(Convert.ToInt32(notUsedE[i].Target)) == -1) ||
+					     (notUsedV.IndexOf(Convert.ToInt32(notUsedE[i].Source)) == -1))) continue;
+					if (minE != -1)
+					{
+						if (notUsedE[i].Weight < notUsedE[minE].Weight)
+							minE = i;	
+					}
+					else
+						minE = i;
+				}
+
+				//заносим новую вершину в список использованных и удаляем ее из списка неиспользованных
+				if (usedV.IndexOf(Convert.ToInt32(notUsedE[minE].Source)) != -1)
+				{
+					usedV.Add(Convert.ToInt32(notUsedE[minE].Target));
+					notUsedV.Remove(Convert.ToInt32(notUsedE[minE].Target));
+				}
+				else
+				{
+					usedV.Add(Convert.ToInt32(notUsedE[minE].Source));
+					notUsedV.Remove(Convert.ToInt32(notUsedE[minE].Source));
+				}
+				//заносим новое ребро в дерево и удаляем его из списка неиспользованных
+				explanation += $"Ребро с минимальным весом для вершины {notUsedE[minE].Source} будет в вершину {notUsedE[minE].Target} и равно {notUsedE[minE].Weight}.\n";
+				explanation += $"Добавляем вершину {notUsedE[minE].Target} в остов и отмечаем как пройденную\n\n";
+				
+				mst.Add(notUsedE[minE]);
+				notUsedE.RemoveAt(minE);
+			}
+			
+			Graph graph = new Graph();
+			foreach (var link in mst)
+			{
+				graph.AddLink(link.Source + "-" + link.Target, link.Weight);
+			}
+
+			graph.IsMst = true;
+			return (graph, explanation);
 		}
     }
 }

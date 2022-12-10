@@ -14,6 +14,8 @@ namespace AlgorithmLab5
 			Links = new();
 		}
 
+		public bool IsUndirected = false;
+		public bool IsMst = false;
 		public Dictionary<string, Node> Nodes { get; set; }
 		public List<Link> Links { get; set; }
         
