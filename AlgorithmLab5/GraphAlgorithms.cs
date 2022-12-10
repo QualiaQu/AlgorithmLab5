@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace AlgorithmLab5
@@ -428,8 +427,7 @@ namespace AlgorithmLab5
 			for (int i = 0; i < _graph.Nodes.Count; i++)
 				notUsedV.Add(i);
 			Random rand = new Random();
-			//var start = rand.Next(0, _graph.Nodes.Count);
-			var start = 0;
+			var start = rand.Next(0, _graph.Nodes.Count);
 			usedV.Add(start);
 			explanation += $"Начинаем с вершины {start}\n";
 			notUsedV.RemoveAt(usedV[0]);

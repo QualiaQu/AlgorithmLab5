@@ -33,7 +33,7 @@ namespace AlgorithmLab5
 			AddNode(t);
 			Links.Add(new Link(s, t, weight));
 
-			Nodes[s].AddNeighbour(t);
+			if (s != null) Nodes[s].AddNeighbour(t);
 		}
 
 		public void AddLink<T>(T link, int weight)
@@ -52,19 +52,19 @@ namespace AlgorithmLab5
 			string s = source.ToString();
 			string t = target.ToString();
 
-			for (int i = 0; i < Links.Count; i++)
+			foreach (var t1 in Links.Where(t1 => s == t1.Source &&
+			                                     t == t1.Target))
 			{
-				if (s == Links[i].Source &&
-					t == Links[i].Target) Links[i].Weight = weight;
+				t1.Weight = weight;
 			}
 		}
 
 		public void AddWeight<T>(T source, T target, int delta)
 		{
-			for(int i = 0; i < Links.Count; i++)
+			foreach (var t in Links)
 			{
-				if (Links[i].Source == source.ToString() &&
-					Links[i].Target == target.ToString() ) Links[i].Weight += delta;
+				if (t.Source == source.ToString() &&
+				    t.Target == target.ToString() ) t.Weight += delta;
 			}
 		}
 
@@ -104,8 +104,8 @@ namespace AlgorithmLab5
 
 	public class Node
 	{
-		public string Name { get; set; }
-		public List<string> Neighbours { get; set; }
+		public string Name { get; private set; }
+		public List<string> Neighbours { get; }
 
 		public Node(string name)
 		{

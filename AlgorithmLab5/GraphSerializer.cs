@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace AlgorithmLab5
 {
@@ -67,19 +66,10 @@ namespace AlgorithmLab5
 
         private static bool IsUndirected(Graph graph)
         {
-            int count = 0;
-            foreach (var link in graph.Links)
-            {
-                var tempLink = link.Target + "-" + link.Source;
-                foreach (var current in graph.Links)
-                {
-                    if (tempLink == (current.Source + "-" + current.Target))
-                    {
-                        count++;
-                        break;
-                    }
-                }
-            }
+            var count = graph.Links
+                .Select(link => link.Target + "-" + link.Source)
+                .Count(tempLink => graph.Links
+                .Any(current => tempLink == (current.Source + "-" + current.Target)));
 
             return count == graph.Links.Count;
         }

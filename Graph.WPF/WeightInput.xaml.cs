@@ -3,7 +3,7 @@ using System.Windows;
 
 namespace Graph.WPF
 {
-    public partial class WeightInput : Window
+    public partial class WeightInput
     {
         public WeightInput()
         {

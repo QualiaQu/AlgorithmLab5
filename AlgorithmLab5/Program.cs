@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace AlgorithmLab5
 {
@@ -8,7 +9,7 @@ namespace AlgorithmLab5
 	{
 		
 
-		static void Main(string[] args)
+		static void Main()
 		{
 			WriteLog writeLog = WriteInConsole;
 			//TestDFT(writeLog);
@@ -23,8 +24,7 @@ namespace AlgorithmLab5
 
 		private static void TestMaxFlow2(WriteLog writeLog)
 		{
-			
-			string[] graphData = FileWorker.ReadFile("input.csv");
+			string[] graphData = File.ReadAllLines("input.csv");
 			var graph = GraphSerializer.Deserialize(graphData, GraphSerializer.GraphStorageType.MyType);
 
 			GraphAlgorithms algorithms = new(graph, writeLog);
