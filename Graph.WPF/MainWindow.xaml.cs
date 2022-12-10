@@ -37,7 +37,7 @@ namespace Graph.WPF
 			_graph = GraphSerializer.Deserialize(graphData, GraphSerializer.GraphStorageType.AdjacencyMatrix);
 			_field = new(Canvas, writeLog, _graph);
 			_field.ArrangeInCircle(MWindow.Width * 2 / 3, MWindow.Height);
-			_field.Draw(true);
+			_field.Draw(!_graph.IsUndirected);
 		}
 
 		private void DrawMst(AlgorithmLab5.Graph graph)

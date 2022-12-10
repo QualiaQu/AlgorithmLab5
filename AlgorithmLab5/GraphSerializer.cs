@@ -61,9 +61,28 @@ namespace AlgorithmLab5
 				throw new NotImplementedException();
 			}
 
+            graph.IsUndirected = IsUndirected(graph);
 			return graph;
         }
 
+        private static bool IsUndirected(Graph graph)
+        {
+            int count = 0;
+            foreach (var link in graph.Links)
+            {
+                var tempLink = link.Target + "-" + link.Source;
+                foreach (var current in graph.Links)
+                {
+                    if (tempLink == (current.Source + "-" + current.Target))
+                    {
+                        count++;
+                        break;
+                    }
+                }
+            }
+
+            return count == graph.Links.Count;
+        }
         private static Graph ToGraph(int[,] arr)
 		{
             Graph graph = new();

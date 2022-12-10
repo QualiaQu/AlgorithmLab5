@@ -255,7 +255,8 @@ namespace Graph.WPF
 		}
 		private void DoUndirected()
 		{
-			var newLinks = Graph.Links.ToDictionary(link => link.Target + "-" + link.Source, link => link.Weight);
+			var newLinks = new Dictionary<string, int>();
+			foreach (var link in Graph.Links) newLinks.Add(link.Target + "-" + link.Source, link.Weight);
 			foreach (var link in newLinks)
 			{
 				Graph.AddLink(link.Key, link.Value);
