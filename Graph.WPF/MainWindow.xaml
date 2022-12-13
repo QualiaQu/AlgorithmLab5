@@ -30,7 +30,7 @@
 		</ComboBox>
 		<TextBox Grid.Column="1" HorizontalAlignment="Left" Margin="140,24,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="175" Height="40"
 				 x:Name="TextBox" BorderBrush="{x:Null}"/>
-		<TextBlock FontSize="20" Grid.Column="1" HorizontalAlignment="Center" Margin="0,84,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="1100" Width="380"
+		<TextBlock FontSize="15" Grid.Column="1" HorizontalAlignment="Center" Margin="0,84,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="1100" Width="380"
 		           x:Name="Log">
 			<TextBlock.Background>
 				<ImageBrush/>
