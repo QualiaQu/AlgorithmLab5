@@ -314,7 +314,7 @@ namespace Graph.WPF
 					links.Add(link);
 					_writeLog(" " + link + "[" + rGraph[link] + "]");
 					_canvas.Children.Clear();
-					Draw(true, links);
+					Draw(true, links, rGraph);
 					await Task.Delay(time);
 				}
 				_writeLog($"\nМинимальный поток у этого пути: {pathFlow}\n");
@@ -330,7 +330,7 @@ namespace Graph.WPF
 				maxFlow += pathFlow;
 				_writeLog("-----\n");
 				_canvas.Children.Clear();
-				Draw(true, null);
+				Draw(true, null, rGraph);
 				await Task.Delay(time);
 			}
 			
@@ -480,6 +480,40 @@ namespace Graph.WPF
 				}
 			}
 		}
+		private void DrawLinksWithFlow(AlgorithmLab5.Graph graph, Dictionary<string, Point> pc, bool arrow, List<string> links, Dictionary<string, int> rGraph)
+		{
+			foreach (var l in graph.Links)
+			{
+				Line line = new()
+				{
+					X1 = pc[l.Source].X + _radius / 2,
+					Y1 = pc[l.Source].Y + _radius / 2,
+					X2 = pc[l.Target].X + _radius / 2,
+					Y2 = pc[l.Target].Y + _radius / 2,
+					Stroke = _defaultColor,
+					StrokeThickness = _strokeThickness
+				};
+				if (links != null && links.Contains(l.Source + "-" + l.Target))
+				{
+					line.Stroke = Brushes.Red;
+				}
+				_canvas.Children.Add(line);
+
+				TextBlock text = new()
+				{
+					FontSize = 16,
+					Text = $"{rGraph[l.Source + "-" + l.Target]}/" + l.Weight.ToString(),
+					RenderTransform = new TranslateTransform((pc[l.Target].X + pc[l.Source].X + _radius) / 2,
+						(pc[l.Target].Y + pc[l.Source].Y + _radius) / 2)
+				};
+				_canvas.Children.Add(text);
+				if (arrow)
+				{
+					DrawArrow(_points[l.Source].X + _radius / 2, _points[l.Source].Y + _radius / 2,
+						_points[l.Target].X + _radius / 2, _points[l.Target].Y + _radius / 2);
+				}
+			}
+		}
 
 		private void DrawBlackLink(AlgorithmLab5.Graph graph, Link op)
 		{
@@ -579,6 +613,12 @@ namespace Graph.WPF
 		public void Draw(bool arrow, List<string> links)
 		{
 			DrawLinks(Graph, _points, arrow, links);
+			DrawNodes(Graph, _points);
+		}
+
+		private void Draw(bool arrow, List<string> links, Dictionary<string, int> rGraph)
+		{
+			DrawLinksWithFlow(Graph, _points, arrow, links, rGraph);
 			DrawNodes(Graph, _points);
 		}
 
