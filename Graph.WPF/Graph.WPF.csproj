@@ -21,7 +21,9 @@
     <Content Include="bin\Debug\net5.0-windows\net.csv" />
     <Content Include="bin\Debug\net5.0-windows\save.csv" />
     <Content Include="bin\Debug\net5.0-windows\test.csv" />
+    <Content Include="bin\Debug\net5.0-windows\testHex.csv" />
     <Content Include="bin\Debug\net5.0-windows\testSave.csv" />
+    <Content Include="bin\Debug\net5.0-windows\zero.csv" />
     <Content Include="bin\Debug\net5.0-windows\остов тест.csv" />
   </ItemGroup>
 
