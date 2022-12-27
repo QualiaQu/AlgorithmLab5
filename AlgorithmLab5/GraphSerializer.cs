@@ -69,7 +69,7 @@ namespace AlgorithmLab5
             var count = graph.Links
                 .Select(link => link.Target + "-" + link.Source)
                 .Count(tempLink => graph.Links
-                .Any(current => tempLink == (current.Source + "-" + current.Target)));
+                .Any(current => tempLink == current.Source + "-" + current.Target));
 
             return count == graph.Links.Count;
         }

@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AlgorithmLab5
 {
@@ -14,8 +11,8 @@ namespace AlgorithmLab5
 			Links = new();
 		}
 
-		public bool IsUndirected = false;
-		public bool IsMst = false;
+		public bool IsUndirected;
+		public bool IsMst;
 		public Dictionary<string, Node> Nodes { get; set; }
 		public List<Link> Links { get; set; }
         
@@ -61,19 +58,27 @@ namespace AlgorithmLab5
 
 		public void AddWeight<T>(T source, T target, int delta)
 		{
-			foreach (var t in Links)
+			foreach (var t in Links.Where(t => t.Source == source.ToString() &&
+			                                   t.Target == target.ToString()))
 			{
-				if (t.Source == source.ToString() &&
-				    t.Target == target.ToString() ) t.Weight += delta;
+				t.Weight += delta;
 			}
+		}
+
+		public void Clear()
+		{
+			Nodes.Clear();
+			Links.Clear();
+			IsMst = false;
+			IsUndirected = false;
 		}
 
 		public void RemoveNode(string node)
 		{
 			Nodes.Remove(node);
-			foreach(var n in Nodes.Values)
+			foreach (var n in Nodes.Values.Where(n => n.Neighbours.Contains(node)))
 			{
-				if (n.Neighbours.Contains(node)) n.Neighbours.Remove(node);
+				n.Neighbours.Remove(node);
 			}
 			for(int i = 0; i < Links.Count;)
 			{
@@ -129,11 +134,6 @@ namespace AlgorithmLab5
 		public string Source { get; set; }
 		public string Target { get; set; }
 		public int Weight { get; set; }
-
-		public Link()
-		{
-
-		}
 
 		public Link(string source, string target, int weight)
 		{
